@@ -1,5 +1,6 @@
 package com.inchcape.inchcapeisthebest;
 
+import com.inchcape.inchcapeisthebest.DTO.ActorDTO;
 import com.inchcape.inchcapeisthebest.controllers.ExampleController;
 import com.inchcape.inchcapeisthebest.entities.Actor;
 import com.inchcape.inchcapeisthebest.service.ActorService;
@@ -21,8 +22,8 @@ import static org.mockito.Mockito.*;
 public class ActorControllerStepDefs {
     private ActorService actorService;
     private final Long expectedId = 1L;
-    private final Actor actor = new Actor(expectedId, "John", "Doe", LocalDateTime.now(), new ArrayList<>());
-    private Actor actualActor;
+    private final ActorDTO actor = new ActorDTO(expectedId, "John", "Doe", null, new ArrayList<>());
+    private ActorDTO actualActor;
     @Before
     public void setUp(){
         actorService = mock(ActorService.class);
@@ -32,15 +33,16 @@ public class ActorControllerStepDefs {
           doReturn(actor).when(actorService).getActorById(id);
     }
 
-    @When("get request is made /actor/{long}")
+    @When("a GET request is made for an actor with ID {long}")
     public void whenRequestWithId(Long id){
         final ExampleController actorController = new ExampleController(actorService);
         try {
-            actualActor = (Actor) actorController.getActorById(id).getBody();
+            actualActor = (ActorDTO) actorController.getActorById(id).getBody();
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
+
 
     @Then("an actor is returned")
     public void thenActorIsReturned(){
