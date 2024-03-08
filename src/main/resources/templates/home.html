@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sakila Database Home</title>
+    <!-- Add references to your CSS files here -->
+</head>
+<body>
+<h1>Welcome to the Sakila Database</h1>
+
+<!-- Section for displaying all actors -->
+<section>
+    <h2>All Actors</h2>
+    <div id="actorsList">
+        <!-- This should be filled dynamically with actors data -->
+        <ul th:if="${actors}" th:each="actor : ${actors}">
+            <li th:text="${actor.firstname} + ' ' + ${actor.lastName}">Actor Name</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Section for adding a new actor -->
+<section>
+    <h2>Add New Actor</h2>
+    <button>Add Actor</button>
+</section>
+
+<!-- Section for searching an actor by ID -->
+<section>
+    <h2>Search Actor by ID</h2>
+    <form action="#" th:action="@{/actorById/{id}(id=${actorId})}" method="get">
+        <label for="actorId">Actor ID:</label>
+        <input type="text" id="actorId" name="actorId">
+        <button type="submit">Search</button>
+    </form>
+    <div id="actorDetails" th:if="${actor}">
+        <p>Actor Name: <span th:text="${actor.firstname} + ' ' + ${actor.lastName}"></span></p>
+        <!-- Add more actor details here -->
+    </div>
+</section>
+
+<!-- Additional sections for other operations can be added below -->
+
+<!-- Add references to your JS files here -->
+
+</body>
+</html>

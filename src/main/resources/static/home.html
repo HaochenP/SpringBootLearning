@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sakila Database Home</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link rel="stylesheet" type="text/css" href="./blackjack.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script></head>
+<body>
+    <h1>Welcome to a Sakila Database CRUD operation interface</h1>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="(alert('Sorry our name input system is down, this is the next best thing we have'))">
+        Add an actor
+      </button>
+      <button id= "searchButton"type="button" class="btn btn-primary" data-toggle="modal" data-target="#actorSearch" onclick="">
+        Search actor by Id
+      </button>
+    <button id ="deleteButton" class="btn btn-primary" onclick="deleteButtonClick()"> Delete an actor</button>
+    <button id="deleteAllButton" class="btn btn-primary"> Delete all records</button>
+    <div id="actorInfo">
+
+    </div>
+    <button id="confirmDelete" style="display:none;">Confirm Delete</button>
+    <button id="cancelDelete" style="display:none;">I give up, you can live</button>
+    <div class="row justify-content-center" id="movingModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <img src="https://media1.tenor.com/m/x5eWIvHg1yYAAAAC/sad-hamster-hampter.gif" width="300px" height="300px"/>
+        <p> Please spare me</p>
+        <button id="finalDelete">Delete</button>
+    </div>
+    <div id="breakout-game" style="display:none">
+        <canvas id="myCanvas" width="480" height="320"></canvas>
+    </div>
+    <div id="exampleModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Name Generator - Try Your Luck!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <input id="NameCheck" class="form-control" placeholder="Check if the name you want is in the list" />
+                            <button id="checkName" class="btn btn-info mt-2" onclick="checkName()">Check Name Availability</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <p id="firstName">First Name</p>
+                            <button id="generateFirstName" class="btn btn-primary" onclick="generateName(1)">I'm Feeling Lucky</button>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <p id="lastName">Last Name</p>
+                            <button id="generateLastName" class="btn btn-primary" onclick="generateName(2)">I'm Feeling Lucky</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="addActorClick()">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="myAudio">
+        <source src="./sad.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+      </audio>
+      
+    <div id="actorSearch" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Actor by ID</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <div class="mb-4">
+                        <span>Is this the actor ID you are looking for?</span>
+                    </div>
+                    <div class="mb-3">
+                        <button id="lower" class="btn btn-primary mr-2" onclick="guessNumber('lower')">Lower</button>
+                        <span id="actorId" class="mx-2" style="font-size: 1.25rem; font-weight: bold;">0</span>
+                        <button id="higher" class="btn btn-primary ml-2" onclick="guessNumber('higher')">Higher</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="searchActor()">Search for Actor</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="verification"  tabindex="-1" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Actor by ID</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <h2>Dealer: <span id="dealer-sum"></span></h2>
+                    <div id="dealer-cards">
+                        <img id="hidden" src="./cards/BACK.png">
+                    </div>
+
+                    <h2>You: <span id="your-sum"></span></h2>
+                    <div id="your-cards"></div>
+
+                    <br>
+                    <button id="hit">Hit</button>
+                    <button id="stay">Stay</button>
+                    <p id="results"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="searchActor()">Search for Actor</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('verification').modal('hide')">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+    
+
+</body>
+<script type="text/javascript" src="./breakout.js"></script>
+<script type="text/javascript" src="./generateNames.js"></script>
+<script type="text/javascript" src="./searchActor.js"></script>
+<script>
+    let audio = new Audio('./sad.mp3')
+    function playAudio() {
+  var audio = document.getElementById("myAudio");
+  audio.play();
+}
+
+function pauseAudio() {
+  var audio = document.getElementById("myAudio");
+  audio.pause();
+}
+    audio.play();
+    var actorId;
+    $(document).ready(function(){
+        audio.play();
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+        $("#deleteAllButton").click(function(){
+            alert("You are about to delete all records. This action cannot be undone. Are you sure you want to proceed?");
+            $('#breakout-game').show();
+            fetchActors().then(() => {
+                isGameRunning = true;
+                draw(); 
+            });
+        });
+
+        $("#deleteButton").click(function(){
+            console.log("delete button clicked")
+            actorId = prompt("Please enter the actor ID to delete");
+            if (actorId) {
+                getActorById(actorId).then(function(actor) {
+                    $('#actorInfo').html(`<p>First Name: ${actor.firstname}</p><p>Last Name: ${actor.lastName}</p>`);
+                    $('#confirmDelete').show();
+                }).catch(function() {
+                    alert("Actor not found. Please try again.");
+                });
+            }
+        });
+        $('#confirmDelete').click(function() {
+            alert("The record does not want to die, it's trying to run away. You need to be quick to delete it.")
+            playAudio();
+            $('#movingModal').show();
+            $('#cancelDelete').show();
+            animateModal();
+        });
+
+        async function getActorById(actorId) {
+            return await $.get(`/actorById/${actorId}`);
+        }
+
+        async function deleteActorById(actorId) {
+            return await $.ajax({
+                url: `/deleteActor/${actorId}`,
+                type: 'DELETE'
+            });
+        }
+
+        function animateModal() {
+            var maxWidth = $(window).width() - $('#movingModal').outerWidth();
+            var maxHeight = $(window).height() - $('#movingModal').outerHeight();
+
+            var newLeft = Math.floor(Math.random() * maxWidth);
+            var newTop = Math.floor(Math.random() * maxHeight);
+
+            $('#movingModal').animate({
+                left: newLeft,
+                top: newTop
+            }, 1000, function() {
+                animateModal();
+            });
+        }
+
+        $('#cancelDelete').click(function() {
+            $('#movingModal').stop(true, false);
+            $('#movingModal').hide();
+            $('#actorInfo').html('');
+            $('#confirmDelete').hide();
+            $('#cancelDelete').hide();
+        });
+
+        $('#finalDelete').off().click(function() {
+            $('#movingModal').stop(true, false);
+        });
+
+        $('#finalDelete').click(function() {
+            if (actorId) {
+                deleteActorById(actorId).then(function() {
+                    alert("Actor deleted successfully");
+                    $('#actorInfo').html('');
+                    $('#confirmDelete').hide();
+                    $('#cancelDelete').hide();
+                    $('#movingModal img').addClass('shatter-effect'); 
+                    setTimeout(function() {
+                        $('#movingModal').hide();
+                        pauseAudio();
+                    }, 1000); 
+                }).catch(function() {
+                    alert("Error occurred. Please try again.");
+                });
+            }
+        });
+
+
+    });
+</script>
+
+
+</html>
+
